@@ -29,6 +29,14 @@ async function startServer() {
   // Mount API router
   app.use('/api', apiRouter);
 
+  // 404 handler for API routes (prevent falling through to frontend HTML)
+  app.use('/api', (req, res) => {
+    res.status(404).json({
+      success: false,
+      message: `API endpoint tidak ditemukan: ${req.method} ${req.originalUrl}`,
+    });
+  });
+
   // Health check endpoint
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });

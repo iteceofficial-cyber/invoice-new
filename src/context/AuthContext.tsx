@@ -72,6 +72,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        return {
+          success: false,
+          message: `Server mengembalikan respons non-JSON (Status ${res.status}). Pastikan backend server aktif.`,
+        };
+      }
       const data = await res.json();
       if (res.ok && data.success) {
         localStorage.setItem('inv_auth_token', data.token);
